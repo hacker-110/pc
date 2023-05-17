@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：用于指定当前的映射文件和那个接口进行映射 ，需要指定接口的文件路径 ，需要标注包的完全路径接口  -->
+<mapper namespace="com.example.pc.mapper.CommodityMapper">
+    <!--    商品分类新增-->
+<insert id="addCommodity"  useGeneratedKeys="true" keyProperty="id">
+    insert into wx_classification (moduleName)
+    values (#{moduleName})
+</insert>
+
+    <!--    商品分类列表-->
+    <select id="selectCommodityList" resultType="com.example.pc.dto.ClassifyDTO">
+        select  id ,moduleName  from wx_classification
+    </select>
+
+
+    <!--    商品列表-->
+    <select id="selectCommodityLists" resultType="com.example.pc.dto.ClassifyListDTO">
+        select  id ,name , price , introduce, img_url,top ,create_time ,state,product_status from wx_classifyList
+        <where>
+        <if test="name != null and name !=''">
+            and name LIKE CONCAT("%", #{name}, "%")
+        </if>
+        <if test="state != null and state !=''">
+            and state LIKE CONCAT("%", #{state}, "%")
+        </if>
+        </where>
+        order by create_time  desc , top desc
+
+    </select>
+    <!--    商品新增-->
+    <insert id="addCommodityList"  useGeneratedKeys="true" keyProperty="id">
+        insert into wx_classifyList (name ,  price, introduce , img_url , top , state,product_status )
+        values (#{name} ,  #{price}, #{introduce} , #{img_url} , #{top} , #{state},#{product_status})
+    </insert>
+    <!--    商品编辑-->
+    <update id="updateCommodityList" >
+        update  wx_classifyList set
+                                  name = #{name} ,
+                                  price = #{price},
+                                  introduce = #{introduce} ,
+                                  img_url = #{img_url},
+                                  top = #{top} ,
+                                  state = #{state},
+                                  product_status = #{product_status}
+        where id = #{id}
+    </update>
+<!--    商品详情查询-->
+    <select id="selectDetailsCommodityList" resultType="com.example.pc.dto.ClassifyListDTO">
+        select  id ,name , price , introduce, img_url,top  ,state,product_status from wx_classifyList
+      where   id = #{id}
+    </select>
+    <!--    商品删除-->
+    <delete id="deleteCommodityList">
+        delete from wx_classifyList where id = #{id}
+    </delete>
+</mapper>

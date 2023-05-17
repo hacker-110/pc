@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：用于指定当前的映射文件和那个接口进行映射 ，需要指定接口的文件路径 ，需要标注包的完全路径接口  -->
+<mapper namespace="com.example.pc.mapper.SpecificationMapper">
+
+    <!--    一级分类-->
+    <select id="selectProductStyle" resultType="com.example.pc.dto.ProductDTO">
+        select id  , product_id , name , category ,state , img_url  from pc_product_style where product_id = #{product_id}
+    </select>
+    <!--    二级分类-->
+    <select id="selectProductColor" resultType="com.example.pc.dto.ProductDTO">
+        select id  , product_id , name , category ,state  from pc_product_color where product_id = #{product_id}
+    </select>
+    <!--    三级分类-->
+    <select id="selectProductSize" resultType="com.example.pc.dto.ProductDTO">
+        select id  , product_id , name , category ,state  from pc_product_size where product_id = #{product_id}
+    </select>
+
+    <!--    新增一级分类-->
+    <insert id="addProductStyle" parameterType="java.util.List">
+        INSERT INTO pc_product_style
+        (id , product_id, name , category, img_url)
+        VALUES
+        <foreach collection="list"  item="item" separator=",">
+            (#{item.id},#{item.product_id}, #{item.name} , #{item.category} , #{item.img_url})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        id = VALUES(id),
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        category = VALUES(category),
+        img_url = VALUES(img_url)
+</insert>
+    <!--   新增二级分类-->
+    <insert id="addProductColor"  parameterType="java.util.List">
+        INSERT INTO pc_product_color
+        (id , product_id, name , category)
+        VALUES
+        <foreach collection="list"  item="item" separator=",">
+            (#{item.id},#{item.product_id}, #{item.name} , #{item.category} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        id = VALUES(id),
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        category = VALUES(category)
+    </insert>
+    <!--   新增三级分类-->
+    <insert id="addProductSize"  parameterType="java.util.List">
+        INSERT INTO pc_product_size
+        (id , product_id, name , category)
+        VALUES
+        <foreach collection="list"  item="item" separator=",">
+            (#{item.id},#{item.product_id}, #{item.name} , #{item.category} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        id = VALUES(id),
+        product_id = VALUES(product_id),
+        name = VALUES(name),
+        category = VALUES(category)
+    </insert>
+<!--       删除一级分类子规格-->
+<delete id="deleteProductStyle">
+    delete from pc_product_style  where  product_id = #{product_id}
+</delete>
+<!--       删除二级分类子规格-->
+    <delete id="deleteProductColor">
+        delete from pc_product_color where  product_id = #{product_id}
+    </delete>
+
+<!--       删除三级分类子规格-->
+    <delete id="deleteProductSize">
+        delete from pc_product_size where  product_id = #{product_id}
+    </delete>
+
+<!--       删除一级分类规格-->
+    <delete id="deleteProductListOne">
+        delete from pc_product_style where product_id = #{product_id} and id not in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    </delete>
+
+    <!--       删除二级分类规格-->
+    <delete id="deleteProductListTwo">
+        delete from pc_product_color where product_id = #{product_id} and id not in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+    </delete>
+    <!--       删除三级分类规格-->
+    <delete id="deleteProductListThree">
+        delete from pc_product_size where product_id = #{product_id} and id not in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+         #{item}
+        </foreach>
+    </delete>
+<!--    商品所属规格查询-->
+    <select id="selectSpecificationDTO" resultType="com.example.pc.dto.SpecificationDTO">
+        select id ,product_id ,style_id ,color_id , size_id,price   from pc_product_specification where  product_id = #{product_id}
+    </select>
+<!--    新增商品所属规格查询-->
+    <insert id="addSpecificationDTO" parameterType="java.util.List">
+        INSERT INTO pc_product_specification
+        (id , product_id, style_id , color_id, size_id,price)
+        VALUES
+        <foreach collection="list"  item="item" separator=",">
+            ( #{item.id},#{item.product_id}, #{item.style_id} , #{item.color_id} , #{item.size_id} , #{item.price})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        id = VALUES(id),
+        product_id = VALUES(product_id),
+        style_id = VALUES(style_id),
+        color_id = VALUES(color_id),
+        size_id = VALUES(size_id),
+        price = VALUES(price)
+    </insert>
+<!--    删除商品所属规格-->
+    <delete id="deleteSpecificationDTO">
+        delete from pc_product_specification where product_id = #{product_id}
+    </delete>
+
+    <!-- 编辑删除商品所属规格-->
+    <delete id="deleteSpecifications">
+        delete from pc_product_specification where  product_id = #{product_id}  and id not in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+             #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：用于指定当前的映射文件和那个接口进行映射 ，需要指定接口的文件路径 ，需要标注包的完全路径接口  -->
+<mapper namespace="com.example.pc.mapper.BannerMapper">
+    <!--    banner列表-->
+    <select id="selectBannerList" resultType="com.example.pc.dto.BannerDTO">
+        select  id ,bannerUrl , bannerName  from wx_homeBanner
+    </select>
+
+<!--    banner添加-->
+    <insert id="addInsertBanner"  useGeneratedKeys="true" keyProperty="id">
+        insert into wx_homeBanner ( bannerUrl, bannerName)
+        values ( #{bannerUrl}, #{bannerName})
+    </insert>
+<!--    banner编辑-->
+    <update id="updateInsertBanner" >
+        update  wx_homeBanner set
+            bannerUrl = #{bannerUrl} ,
+            bannerName = #{bannerName}
+        where id = #{id}
+    </update>
+<!--    banner删除-->
+    <delete id="deleteInsertBanner">
+        delete from wx_homeBanner where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace属性：用于指定当前的映射文件和那个接口进行映射 ，需要指定接口的文件路径 ，需要标注包的完全路径接口  -->
+<mapper namespace="com.example.pc.mapper.LoginMapper">
+<select id="getLogin" resultType="com.example.pc.dto.PcUserInfoDTO">
+    select  id , user_name , password, img_url ,create_time  from pc_userInfo
+    where user_name = #{userName} and password = #{password}
+</select>
+</mapper>
